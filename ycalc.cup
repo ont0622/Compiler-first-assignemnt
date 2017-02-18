@@ -91,7 +91,7 @@ parser code {:
 
 terminal           SEMI, PLUS, MINUS, LPAREN, RPAREN, WITH;
 terminal Integer   NUMBER;
-terminal Integer   IDENT;
+terminal String    IDENT;
 
 non terminal Object     assign;
 non terminal Integer    waestart, wae;
@@ -114,7 +114,7 @@ non terminal Integer    waestart, wae;
                 System.out.println("The value is = " + e1);
                 }
                 catch(NullPointerException e){
-                    System.out.print("Null pointer Exception");
+                    System.out.print("Semantic Error");
                 }
                 :}
                 ;
@@ -128,7 +128,7 @@ non terminal Integer    waestart, wae;
                 RESULT = new Integer(e1.intValue() + e2.intValue());
                 }
                 catch(NullPointerException e){
-                    System.out.print("Null pointer Exception");
+                    System.out.print("Semantic Error");
                 }
                 :}
                 |
@@ -138,27 +138,25 @@ non terminal Integer    waestart, wae;
                 RESULT = new Integer(e1.intValue() - e2.intValue());
                 }
                 catch(NullPointerException e){
-                    System.out.print("Null pointer Exception");
+                    System.out.print("Semantic Error");
                 }
                 :}
                 |
-                LPAREN assign:a RPAREN
+                LPAREN assign:a wae:e1 RPAREN
                 {:
                 try{
-                RESULT = new Integer(a.intValue());
+                RESULT = new Integer(e1.intValue());
                 }
                 catch(NullPointerException e){
-                    System.out.print("Null pointer Exception");
+                    System.out.print("Semantic Error");
                 }
                 :}
                 |
                 IDENT:i
                 {:
+                    Integer value = null;
                     if(table.containsKey(i)){
-                        Integer value = (Integer) table.get(i);
-                    }
-                    else{
-                        Integer value = null;
+                        value = (Integer) table.get(i);
                     }
                     RESULT = value;
                 :}
@@ -170,7 +168,7 @@ non terminal Integer    waestart, wae;
                     table.put(i, new Integer(e1.intValue()));
                     }
                     catch(NullPointerException e){
-                        System.out.print("Null pointer Exception");
+                        System.out.print("Semantic Error");
                     }
                 :}
                 ;
