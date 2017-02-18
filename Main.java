@@ -1,39 +1,55 @@
 /*
-  This example comes from a short article series in the Linux 
-  Gazette by Richard A. Sevenich and Christopher Lopes, titled
-  "Compiler Construction Tools". The article series starts at
+    Daniel Oh
+    CSC 4340
 
-  http://www.linuxgazette.com/issue39/sevenich.html
-
-  Small changes and updates to newest JFlex+Cup versions 
-  by Gerwin Klein
+    This is a main file for WAE program
 */
 
-/*
-  Commented By: Christopher Lopes
-  File Name: Main.java
-  To Create: 
-  After the scanner, lcalc.flex, and the parser, ycalc.cup, have been created.
-  > javac Main.java
-  
-  To Run: 
-  > java Main test.txt
-  where test.txt is an test input file for the calculator.
-*/
    
 import java.io.*;
+import java.util.*;
    
 public class Main {
-  static public void main(String argv[]) {    
+  static public void main(String argv[]) throws ArrayIndexOutOfBoundsException {
     /* Start the parser */
-    try {
-      parser p = new parser(new Lexer(new FileReader(argv[0])));
-      Object result = p.parse().value;      
-    } catch (Exception e) {
-      /* do cleanup here -- possibly rethrow e */
-      e.printStackTrace();
+
+    if (argv.length == 0){
+      try{
+        System.out.print("WAE> ");
+        String next;
+        StringBuffer userInput = new StringBuffer();
+        Scanner in = new Scanner(System.in);
+        PrintWriter out = new PrintWriter("testFile.txt");
+        do{
+          next = in.next();
+          userInput.append(next);
+        }
+        while(!next.equals(";"));
+        out.append(userInput);
+        out.close();
+        parser p = new parser(new Lexer(new FileReader("testFile.txt")));
+        Object result = p.parse().value;
+      }
+      catch (Error e){
+        e.printStackTrace();
+      }
+      catch (Exception e){
+        e.printStackTrace();
+      }
     }
+    else{
+      try {
+        parser p = new parser(new Lexer(new FileReader(argv[0])));
+        Object result = p.parse().value;
+      }
+      catch (Error e){
+        e.printStackTrace();
+      }
+      catch (Exception e) {
+        e.printStackTrace();
+      }
+
+    }
+
   }
 }
-
-
