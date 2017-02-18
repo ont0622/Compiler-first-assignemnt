@@ -93,8 +93,8 @@ terminal           SEMI, PLUS, MINUS, LPAREN, RPAREN, WITH;
 terminal Integer   NUMBER;
 terminal Integer   IDENT;
 
-non terminal Object     waestart, assign;
-non terminal Integer    wae;
+non terminal Object     assign;
+non terminal Integer    waestart, wae;
 
 /* ----------------------------Grammar Section-------------------- */
    
@@ -108,31 +108,69 @@ non terminal Integer    wae;
             | <id>
 */
 
-   waestart ::= wae:e SEMI
-                {: System.out.println("The value is = " + e); :}
+   waestart ::= wae:e1 SEMI
+                {:
+                try{
+                System.out.println("The value is = " + e1);
+                }
+                catch(NullPointerException e){
+                    System.out.print("Null pointer Exception");
+                }
+                :}
                 ;
 
    wae      ::= NUMBER:n
-                {: RESULT = n; :}
+                {: RESULT = new Integer(n.intValue()); :}
                 |
                 LPAREN PLUS wae:e1 wae:e2 RPAREN
-                {: RESULT = new Integer(e1.intValue() + e2.intValue()); :}
+                {:
+                try{
+                RESULT = new Integer(e1.intValue() + e2.intValue());
+                }
+                catch(NullPointerException e){
+                    System.out.print("Null pointer Exception");
+                }
+                :}
                 |
                 LPAREN MINUS wae:e1 wae:e2 RPAREN
-                {: RESULT = new Integer(e1.intValue() - e2.intValue()); :}
+                {:
+                try{
+                RESULT = new Integer(e1.intValue() - e2.intValue());
+                }
+                catch(NullPointerException e){
+                    System.out.print("Null pointer Exception");
+                }
+                :}
                 |
                 LPAREN assign:a RPAREN
-                {: System.out.println("Assign"); :}
+                {:
+                try{
+                RESULT = new Integer(a.intValue());
+                }
+                catch(NullPointerException e){
+                    System.out.print("Null pointer Exception");
+                }
+                :}
                 |
                 IDENT:i
                 {:
-                    Integer value = (Integer) table.get(i);
+                    if(table.containsKey(i)){
+                        Integer value = (Integer) table.get(i);
+                    }
+                    else{
+                        Integer value = null;
+                    }
                     RESULT = value;
                 :}
-                |
                 ;
+
    assign   ::= WITH LPAREN IDENT:i wae:e1 RPAREN
                 {:
-                    table.put(i,e1);
+                    try{
+                    table.put(i, new Integer(e1.intValue()));
+                    }
+                    catch(NullPointerException e){
+                        System.out.print("Null pointer Exception");
+                    }
                 :}
                 ;

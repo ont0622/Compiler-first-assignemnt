@@ -95,8 +95,6 @@ dec_int_id = [A-Za-z_][A-Za-z_0-9]*
    the start state YYINITIAL. */
 
 
-<YYINITIAL> "with"      { System.out.print(" with "); return symbol(sym.WITH); }
-
 <YYINITIAL> {
    
     /* Return the token SEMI declared in the class sym that was found. */
@@ -108,6 +106,7 @@ dec_int_id = [A-Za-z_][A-Za-z_0-9]*
     "-"                { System.out.print(" - "); return symbol(sym.MINUS); }
     "{"                { System.out.print(" ( "); return symbol(sym.LPAREN); }
     "}"                { System.out.print(" ) "); return symbol(sym.RPAREN); }
+    "with"             { System.out.print(" with "); return symbol(sym.WITH); }
    
     /* If an integer is found print it out, return the token NUMBER
        that represents an integer and the value of the integer that is
@@ -120,7 +119,7 @@ dec_int_id = [A-Za-z_][A-Za-z_0-9]*
        that represents an identifier and the default value one that is
        given to all identifiers. */
     {dec_int_id}       { System.out.print(yytext());
-                         return symbol(sym.IDENT, new Integer(1));}
+                         return symbol(sym.IDENT, new Integer(yytext()));}
    
     /* Don't do anything if whitespace is found */
     {WhiteSpace}       { /* just skip what was found, do nothing */ }   
